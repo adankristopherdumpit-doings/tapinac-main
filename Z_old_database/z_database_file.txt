@@ -1,0 +1,225 @@
+-- Create the database
+CREATE DATABASE grading_system;
+USE grading_system;
+
+-- Roles Table
+CREATE TABLE roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL
+);
+
+-- Academic Years Table
+CREATE TABLE academic_years (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    academic_year VARCHAR(20) NOT NULL -- e.g., '2024-2025'
+);
+
+-- Teachers Table
+CREATE TABLE teachers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fname VARCHAR(50),
+    mname VARCHAR(50) NULL,
+    lname VARCHAR(50),
+    email VARCHAR(100) UNIQUE, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Grade Levels Table
+CREATE TABLE grade_levels (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    grade_name VARCHAR(20)
+);
+
+-- Sections Table
+CREATE TABLE sections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    grade_level_id INT,
+    section_name VARCHAR(50),
+    FOREIGN KEY (grade_level_id) REFERENCES grade_levels(id)
+);
+
+-- Subjects Table
+CREATE TABLE subjects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    subject_name VARCHAR(100),
+    grade_level VARCHAR(10)
+);
+
+-- Subject Assignments Table
+CREATE TABLE subject_assignments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    teacher_id INT NOT NULL,
+    subject_id INT NOT NULL,
+    grade_level_id INT NOT NULL,
+    section_id INT NULL,
+    academic_year_id INT NOT NULL,
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+    FOREIGN KEY (subject_id) REFERENCES subjects(id),
+    FOREIGN KEY (grade_level_id) REFERENCES grade_levels(id),
+    FOREIGN KEY (section_id) REFERENCES sections(id),
+    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
+);
+
+-- Users Table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role_id INT,
+    teacher_id INT,
+    FOREIGN KEY (role_id) REFERENCES roles(id),
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+    force_password_reset TINYINT(1) DEFAULT 1
+);
+
+-- Students Table
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fname VARCHAR(50),
+    mname VARCHAR(50),
+    lname VARCHAR(50),
+    gender ENUM('Male', 'Female') NOT NULL,
+    grade_level_id INT,
+    section_id INT,
+    FOREIGN KEY (grade_level_id) REFERENCES grade_levels(id),
+    FOREIGN KEY (section_id) REFERENCES sections(id)
+);
+
+-- Grades Table
+CREATE TABLE grades (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    subject_id INT,
+    quarter VARCHAR(10),
+    grade DECIMAL(5,2),
+    teacher_id INT,
+    academic_year_id INT NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (subject_id) REFERENCES subjects(id),
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
+);
+
+-- Rankings Table
+CREATE TABLE rankings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    grade_level VARCHAR(10),
+    section VARCHAR(50),
+    average DECIMAL(5,2),
+    rank INT,
+    academic_year_id INT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
+);
+
+-- Final Grades Table
+CREATE TABLE final_grades (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    subject_id INT,
+    final_grade DECIMAL(5,2),
+    academic_year_id INT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (subject_id) REFERENCES subjects(id),
+    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
+);
+
+-- Yearly Summary Table
+CREATE TABLE yearly_summary (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    general_average DECIMAL(5,2),
+    remarks VARCHAR(100),
+    academic_year_id INT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
+);
+
+-- Activity Logs Table
+CREATE TABLE activity_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    subject_id INT,
+    quarter VARCHAR(10),
+    old_grade DECIMAL(5,2),
+    new_grade DECIMAL(5,2),
+    teacher_id INT,
+    academic_year_id INT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (subject_id) REFERENCES subjects(id),
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+    FOREIGN KEY (academic_year_id) REFERENCES academic_years(id)
+);
+
+
+
+
+
+
+
+
+-- Insert Academic Years
+INSERT INTO academic_years (academic_year) VALUES 
+('2023-2024'), ('2024-2025');
+
+-- Insert Roles
+INSERT INTO roles (role_name) VALUES 
+('admin'), ('adviser'), ('teacher'), ('principal'), ('masterteacher');
+
+-- Insert Teachers
+INSERT INTO teachers (fname, mname, lname, email) VALUES
+('Juan', 'Cruz', 'Dela Cruz', 'juan.delacruz@example.com'),
+('Maria', 'Luna', 'Santos', 'maria.santos@example.com'),
+('Jose', 'Reyes', 'Tan', 'jose.tan@example.com'),
+('Ana', 'Lopez', 'Garcia', 'ana.garcia@example.com'),
+('Pedro', 'M.', 'Ramos', 'pedro.ramos@example.com');
+
+-- Insert Users
+INSERT INTO users (username, password, role_id, teacher_id) VALUES
+('admin1', SHA2('admin123', 256), 1, 1),
+('adviser1', SHA2('adviser123', 256), 2, 2),
+('teacher1', SHA2('teacher123', 256), 3, 3),
+('principal1', SHA2('principal123', 256), 4, 4),
+('masterteacher1', SHA2('masterteacher123', 256), 5, 5);
+
+-- Grade Levels
+INSERT INTO grade_levels (grade_name) VALUES 
+('Grade 1'), ('Grade 2'), ('Grade 3'), ('Grade 4'), ('Grade 5'), ('Grade 6');
+
+-- Sections for Grade Levels
+INSERT INTO sections (grade_level_id, section_name) VALUES
+(1, 'SSES'), (1, 'ROSE'), (1, 'SANTAN'), (1, 'DAISY'),
+(2, 'SSES'), (2, 'VENUS'), (2, 'NEPTUNE'), (2, 'SATURN'),
+(3, 'SSES'), (3, 'MABINI'), (3, 'BONIFACIO'), (3, 'RIZAL'),
+(4, 'SSES'), (4, 'Topaz'), (4, 'Emerald'), (4, 'Jade'),
+(5, 'SSES'), (5, 'DIAMOND'), (5, 'PEARL'), (5, 'RUBY'),
+(6, 'SSES'), (6, 'LOVE'), (6, 'HOPE'), (6, 'HUMILITY'), (6, 'FAITH');
+
+-- Subjects for Grades 1 to 6
+INSERT INTO subjects (subject_name, grade_level) VALUES
+-- Grade 1
+('FILIPINO', 'Grade 1'), ('ENGLISH', 'Grade 1'), ('MATHEMATICS', 'Grade 1'), ('SCIENCE', 'Grade 1'),
+('ARALING PANLIPUNAN', 'Grade 1'), ('COMPUTER', 'Grade 1'), ('MAPEH', 'Grade 1'), ('EDUKASYON SA PAGPAPAKATAO (ESP)', 'Grade 1'),
+-- Grade 2
+('FILIPINO', 'Grade 2'), ('ENGLISH', 'Grade 2'), ('MATHEMATICS', 'Grade 2'), ('SCIENCE', 'Grade 2'),
+('ARALING PANLIPUNAN', 'Grade 2'), ('COMPUTER', 'Grade 2'), ('MAPEH', 'Grade 2'), ('EDUKASYON SA PAGPAPAKATAO (ESP)', 'Grade 2'),
+-- Grade 3
+('FILIPINO', 'Grade 3'), ('ENGLISH', 'Grade 3'), ('MATHEMATICS', 'Grade 3'), ('SCIENCE', 'Grade 3'),
+('ARALING PANLIPUNAN', 'Grade 3'), ('COMPUTER', 'Grade 3'), ('MAPEH', 'Grade 3'), ('EDUKASYON SA PAGPAPAKATAO (ESP)', 'Grade 3'),
+-- Grade 4
+('FILIPINO', 'Grade 4'), ('ENGLISH', 'Grade 4'), ('MATHEMATICS', 'Grade 4'), ('SCIENCE', 'Grade 4'),
+('ARALING PANLIPUNAN', 'Grade 4'), ('COMPUTER', 'Grade 4'), ('MAPEH', 'Grade 4'), ('EDUKASYON SA PAGPAPAKATAO (ESP)', 'Grade 4'),
+-- Grade 5
+('FILIPINO', 'Grade 5'), ('ENGLISH', 'Grade 5'), ('MATHEMATICS', 'Grade 5'), ('SCIENCE', 'Grade 5'),
+('ARALING PANLIPUNAN', 'Grade 5'), ('COMPUTER', 'Grade 5'), ('MAPEH', 'Grade 5'), ('EDUKASYON SA PAGPAPAKATAO (ESP)', 'Grade 5'),
+-- Grade 6
+('FILIPINO', 'Grade 6'), ('ENGLISH', 'Grade 6'), ('MATHEMATICS', 'Grade 6'), ('SCIENCE', 'Grade 6'),
+('ARALING PANLIPUNAN', 'Grade 6'), ('COMPUTER', 'Grade 6'), ('MAPEH', 'Grade 6'), ('EDUKASYON SA PAGPAPAKATAO (ESP)', 'Grade 6');
+
+
+
+UPDATE teachers SET created_at = NOW(), updated_at = NOW() WHERE created_at IS NULL OR updated_at IS NULL;
+

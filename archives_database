@@ -1,0 +1,17 @@
+===Database grading_system
+
+== Table structure for table archives
+
+|------
+|Column|Type|Null|Default
+|------
+|//**id**//|int(11)|No|
+|fname|varchar(50)|Yes|NULL
+|mname|varchar(50)|Yes|NULL
+|lname|varchar(50)|Yes|NULL
+|gender|enum('Male', 'Female')|No|
+|grade_level_id|int(11)|Yes|NULL
+|section_id|int(11)|Yes|NULL
+|dropped_at|timestamp|No|current_timestamp()
+== Dumping data for table archives
+

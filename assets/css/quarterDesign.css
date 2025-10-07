@@ -1,0 +1,86 @@
+
+.header-row {
+    background-color: #e0f2f7; /* Light blue similar to the Excel header */
+    border-bottom: 2px solid #007bff;
+}
+.deped-logo {
+    width: 100px; /* Adjust as needed */
+    height: auto;
+}
+.form-label-custom {
+    font-weight: bold;
+    margin-bottom: 0.2rem;
+}
+.form-control-custom {
+    height: calc(1.5em + .5rem + 2px); /* Smaller height for form controls */
+    padding: .25rem .5rem;
+    font-size: .875rem;
+}
+.table-bordered-custom th,
+.table-bordered-custom td {
+    border: 1px solid #dee2e6; /* Standard Bootstrap border color */
+    padding: 0.3rem; /* Smaller padding for table cells */
+    vertical-align: middle;
+}
+.table-bordered-custom thead th {
+    text-align: center;
+}
+.table-bordered-custom tbody td:first-child {
+    text-align: left;
+    padding-left: 0.75rem;
+}
+.table-bordered-custom .score-column {
+    width: 40px; /* Fixed width for individual score columns */
+}
+.table-bordered-custom .total-column {
+    width: 60px; /* Fixed width for Total column */
+}
+.table-bordered-custom .percentage-column {
+    width: 60px; /* Fixed width for Percentage column */
+}
+.table-bordered-custom .grade-column {
+    width: 70px; /* Fixed width for Quarter, Initial, and Grade columns */
+}
+.bg-lightblue {
+    background-color: #e0f2f7; /* Custom light blue */
+}
+.text-center {
+    text-align: center;
+}
+.text-start {
+    text-align: left;
+}
+.text-end {
+    text-align: right;
+}
+.border-left-2 {
+    border-left: 2px solid #dee2e6 !important;
+}
+.border-right-2 {
+    border-right: 2px solid #dee2e6 !important;
+}
+.border-top-2 {
+    border-top: 2px solid #dee2e6 !important;
+}
+.border-bottom-2 {
+    border-bottom: 2px solid #dee2e6 !important;
+}
+.rotated-text {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    text-align: center;
+}
+.small-text {
+    font-size: 0.75rem;
+}
+
+
+
+input[type="number"], input[type="text"] { width: 60px; }
+    .grade-column, .score-column, .total-column, .percentage-column { min-width: 60px; }
+    .border-left-2 { border-left: 2px solid #000; }
+    .border-right-2 { border-right: 2px solid #000; }
